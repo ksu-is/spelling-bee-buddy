@@ -1,1 +1,1 @@
-# spelling-bee-buddy
+Spelling Bee Buddy is a Python-based educational game designed to help children improve their spelling skills in a fun and interactive way. The game presents players with spelling challenges, provides hints for tough words, and rewards correct answers with points and progression through different difficulty levels. It's ideal for kids in elementary and middle school.
