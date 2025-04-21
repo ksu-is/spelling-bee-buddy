@@ -1,5 +1,5 @@
 # main.py
-# Spelling Bee Buddy - Version 3
+# Spelling Bee Buddy - Version 4
 # Author: Moko Djane
 # Created: April 2025
 
@@ -15,7 +15,8 @@ class SpellingBeeBuddy:
     def __init__(self, master):
         self.master = master
         self.master.title("Spelling Bee Buddy")
-        self.words = load_words("easy")
+        self.level = "easy"
+        self.words = load_words(self.level)
         self.current_index = 0
         self.score = 0
 
@@ -30,6 +31,10 @@ class SpellingBeeBuddy:
 
         self.feedback = tk.Label(master, text="")
         self.feedback.pack()
+
+        self.reset_button = tk.Button(master, text="Play Again", command=self.reset_game)
+        self.reset_button.pack()
+        self.reset_button.config(state="disabled")
 
     def check_spelling(self):
         user_input = self.entry.get().strip().lower()
@@ -49,6 +54,18 @@ class SpellingBeeBuddy:
             self.word_label.config(text="Game Over")
             self.entry.config(state="disabled")
             self.submit_button.config(state="disabled")
+            self.reset_button.config(state="normal")
+            self.feedback.config(text=f"Final score: {self.score}/{len(self.words)}")
+
+    def reset_game(self):
+        self.words = load_words(self.level)
+        self.current_index = 0
+        self.score = 0
+        self.word_label.config(text=self.words[self.current_index])
+        self.feedback.config(text="")
+        self.entry.config(state="normal")
+        self.submit_button.config(state="normal")
+        self.reset_button.config(state="disabled")
 
 if __name__ == "__main__":
     root = tk.Tk()
