@@ -1,0 +1,23 @@
+{
+    "easy": [
+        "apple",
+        "ball",
+        "cat",
+        "dog",
+        "egg"
+    ],
+    "medium": [
+        "banana",
+        "grapes",
+        "pencil",
+        "basket",
+        "sugar"
+    ],
+    "hard": [
+        "elephant",
+        "chocolate",
+        "bicycle",
+        "umbrella",
+        "sandwich"
+    ]
+}

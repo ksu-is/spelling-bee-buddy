@@ -1,18 +1,21 @@
 # main.py
-# Spelling Bee Buddy - Version 2
+# Spelling Bee Buddy - Version 3
 # Author: Moko Djane
 # Created: April 2025
 
 import tkinter as tk
+import json
 
-def load_words():
-    return ["apple", "banana", "grape"]
+def load_words(level="easy"):
+    with open("words.json", "r") as f:
+        data = json.load(f)
+    return data[level]
 
 class SpellingBeeBuddy:
     def __init__(self, master):
         self.master = master
         self.master.title("Spelling Bee Buddy")
-        self.words = load_words()
+        self.words = load_words("easy")
         self.current_index = 0
         self.score = 0
 
