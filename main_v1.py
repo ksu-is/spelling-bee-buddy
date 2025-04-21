@@ -1,5 +1,5 @@
 # main.py
-# Spelling Bee Buddy - Version 5
+# Spelling Bee Buddy - Version 6
 # Author: Moko Djane
 # Created: April 2025
 
@@ -39,11 +39,14 @@ class SpellingBeeBuddy:
         self.reset_button = tk.Button(master, text="Play Again", command=self.reset_game, state="disabled")
         self.reset_button.pack()
 
+        self.incorrect_attempt = False
+
     def start_game(self):
         self.level = self.level_var.get()
         self.words = load_words(self.level)
         self.current_index = 0
         self.score = 0
+        self.incorrect_attempt = False
 
         if self.words:
             self.word_label.config(text=self.words[self.current_index])
@@ -62,11 +65,19 @@ class SpellingBeeBuddy:
         if user_input == correct_word:
             self.score += 1
             self.feedback.config(text=f"Correct! Score: {self.score}")
+            self.incorrect_attempt = False
+            self.current_index += 1
         else:
-            self.feedback.config(text=f"Incorrect! The word was {correct_word}")
+            if not self.incorrect_attempt:
+                self.feedback.config(text=f"Incorrect! Hint: Starts with '{correct_word[0]}'")
+                self.incorrect_attempt = True
+                return
+            else:
+                self.feedback.config(text=f"Incorrect again! The word was {correct_word}")
+                self.incorrect_attempt = False
+                self.current_index += 1
 
         self.entry.delete(0, tk.END)
-        self.current_index += 1
         if self.current_index < len(self.words):
             self.word_label.config(text=self.words[self.current_index])
         else:
