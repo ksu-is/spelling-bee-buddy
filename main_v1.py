@@ -1,5 +1,5 @@
 # main.py
-# Spelling Bee Buddy - Version 1
+# Spelling Bee Buddy - Version 2
 # Author: Moko Djane
 # Created: April 2025
 
@@ -14,6 +14,7 @@ class SpellingBeeBuddy:
         self.master.title("Spelling Bee Buddy")
         self.words = load_words()
         self.current_index = 0
+        self.score = 0
 
         self.word_label = tk.Label(master, text=self.words[self.current_index])
         self.word_label.pack()
@@ -32,9 +33,19 @@ class SpellingBeeBuddy:
         correct_word = self.words[self.current_index]
 
         if user_input == correct_word:
-            self.feedback.config(text="Correct!")
+            self.score += 1
+            self.feedback.config(text=f"Correct! Score: {self.score}")
         else:
-            self.feedback.config(text="Incorrect!")
+            self.feedback.config(text=f"Incorrect! The word was {correct_word}")
+
+        self.entry.delete(0, tk.END)
+        self.current_index += 1
+        if self.current_index < len(self.words):
+            self.word_label.config(text=self.words[self.current_index])
+        else:
+            self.word_label.config(text="Game Over")
+            self.entry.config(state="disabled")
+            self.submit_button.config(state="disabled")
 
 if __name__ == "__main__":
     root = tk.Tk()
