@@ -1,14 +1,19 @@
 # main.py
-# Spelling Bee Buddy
+# Spelling Bee Buddy 
 # Author: Moko Djane
 # Created: April 2025
 
 import tkinter as tk
 import json
 import datetime
+import pyttsx3
+import os
 
 def load_words(level="easy"):
-    with open("words.json", "r") as f:
+
+    base_path = os.path.dirname(__file__)  
+    file_path = os.path.join(base_path, "words.json")  
+    with open(file_path, "r") as f:
         data = json.load(f)
     return data.get(level, [])
 
@@ -16,6 +21,11 @@ def save_score(name, score, total):
     with open("scores.txt", "a") as f:
         time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"{time}, {name}, {score}/{total}\n")
+
+def speak_word(word):
+    engine = pyttsx3.init("nsss")  
+    engine.say(word)
+    engine.runAndWait()
 
 class SpellingBeeBuddy:
     def __init__(self, master):
@@ -72,6 +82,8 @@ class SpellingBeeBuddy:
         self.feedback.pack()
         self.reset_button.pack()
 
+        speak_word(self.words[self.current_index])
+
     def check_spelling(self):
         user_input = self.entry.get().strip().lower()
         correct_word = self.words[self.current_index]
@@ -87,6 +99,7 @@ class SpellingBeeBuddy:
 
         if self.current_index < len(self.words):
             self.word_label.config(text=self.words[self.current_index])
+            speak_word(self.words[self.current_index])
         else:
             self.word_label.config(text="Game Over")
             self.entry.config(state="disabled")
