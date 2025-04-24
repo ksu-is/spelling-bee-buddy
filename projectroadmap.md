@@ -48,7 +48,7 @@
 ---
 
 ## 🔧 In Progress / Future Enhancements
-- [ ] Add pronunciation using text-to-speech (`pyttsx3` or `gTTS`)
+- [ ] Add pronunciation using text-to-speech (`pyttsx3`)
 - [ ] Create player name input and save scores per session
 - [ ] Add timer or challenge mode for advanced practice
 
