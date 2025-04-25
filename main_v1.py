@@ -1,5 +1,5 @@
 # main.py
-# Spelling Bee Buddy
+# Spelling Bee Buddy 
 # Author: Moko Djane
 # Created: April 2025
 
@@ -9,6 +9,14 @@ import datetime
 import pyttsx3
 import random
 import os
+import pygame
+
+
+pygame.mixer.init()
+music_path = os.path.join(os.path.dirname(__file__), "theme.mp3") 
+if os.path.exists(music_path):
+    pygame.mixer.music.load(music_path)
+    pygame.mixer.music.play(-1)  
 
 def load_words(level="easy"):
     base_path = os.path.dirname(__file__)
@@ -23,9 +31,11 @@ def save_score(name, score, total):
         f.write(f"{time}, {name}, {score}/{total}\n")
 
 def speak_word(word):
-    engine = pyttsx3.init("nsss")  # macOS TTS engine
+    pygame.mixer.music.set_volume(0.05)
+    engine = pyttsx3.init("nsss")
     engine.say(word)
     engine.runAndWait()
+    pygame.mixer.music.set_volume(1.0)
 
 class SpellingBeeBuddy:
     def __init__(self, master):
