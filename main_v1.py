@@ -1,5 +1,5 @@
 # main.py
-# Spelling Bee Buddy 
+# Spelling Bee Buddy
 # Author: Moko Djane
 # Created: April 2025
 
@@ -7,12 +7,12 @@ import tkinter as tk
 import json
 import datetime
 import pyttsx3
+import random
 import os
 
 def load_words(level="easy"):
-
-    base_path = os.path.dirname(__file__)  
-    file_path = os.path.join(base_path, "words.json")  
+    base_path = os.path.dirname(__file__)
+    file_path = os.path.join(base_path, "words.json")
     with open(file_path, "r") as f:
         data = json.load(f)
     return data.get(level, [])
@@ -23,98 +23,96 @@ def save_score(name, score, total):
         f.write(f"{time}, {name}, {score}/{total}\n")
 
 def speak_word(word):
-    engine = pyttsx3.init("nsss")  
+    engine = pyttsx3.init("nsss")  # macOS TTS engine
     engine.say(word)
     engine.runAndWait()
 
 class SpellingBeeBuddy:
     def __init__(self, master):
         self.master = master
-        self.master.title("Spelling Bee Buddy")
+        master.title("Spelling Bee Buddy")
+
+        self.score = 0
+        self.total = 0
+        self.time_left = 10
+        self.current_word = ""
+        self.words = []
+
         self.level_var = tk.StringVar(value="easy")
         self.name_var = tk.StringVar()
 
-        # Welcome screen widgets
-        self.intro_label = tk.Label(master, text="Welcome to Spelling Bee Buddy!", font=("Arial", 16))
-        self.intro_label.pack(pady=10)
+        self.setup_start_screen()
 
-        tk.Label(master, text="Enter your name:").pack()
-        self.name_entry = tk.Entry(master, textvariable=self.name_var)
-        self.name_entry.pack(pady=5)
+    def setup_start_screen(self):
+        for widget in self.master.winfo_children():
+            widget.destroy()
 
-        tk.Label(master, text="Select difficulty:").pack()
-        for lvl in ["easy", "medium", "hard"]:
-            tk.Radiobutton(master, text=lvl.title(), variable=self.level_var, value=lvl).pack(anchor="w")
+        tk.Label(self.master, text="Enter your name:").pack()
+        tk.Entry(self.master, textvariable=self.name_var).pack()
 
-        self.start_button = tk.Button(master, text="Start Game", command=self.start_game)
-        self.start_button.pack(pady=10)
+        tk.Label(self.master, text="Select difficulty:").pack()
+        for level in ["easy", "medium", "hard"]:
+            tk.Radiobutton(self.master, text=level.capitalize(), variable=self.level_var, value=level).pack()
 
-        # Game widgets
-        self.word_label = tk.Label(master, text="")
-        self.entry = tk.Entry(master, state="disabled")
-        self.submit_button = tk.Button(master, text="Submit", command=self.check_spelling, state="disabled")
-        self.feedback = tk.Label(master, text="")
-        self.reset_button = tk.Button(master, text="Play Again", command=self.reset_game, state="disabled")
+        tk.Button(self.master, text="Start Game", command=self.start_game).pack()
 
     def start_game(self):
-        self.name = self.name_var.get().strip()
-        if not self.name:
-            self.feedback.config(text="Please enter your name to start.")
-            self.feedback.pack()
+        self.name = self.name_var.get()
+        self.words = load_words(self.level_var.get())
+        self.score = 0
+        self.total = 0
+        self.next_word()
+
+    def next_word(self):
+        if not self.words:
+            self.end_game()
             return
 
-        self.words = load_words(self.level_var.get())
-        self.current_index = 0
-        self.score = 0
+        self.current_word = random.choice(self.words)
+        self.words.remove(self.current_word)
+        self.time_left = 10
 
-        self.intro_label.pack_forget()
-        self.name_entry.pack_forget()
-        self.start_button.pack_forget()
-        self.feedback.pack_forget()
+        self.show_game_screen()
+        speak_word(self.current_word)
+        self.update_timer()
 
-        self.word_label.config(text=self.words[self.current_index])
-        self.word_label.pack()
-        self.entry.config(state="normal")
+    def show_game_screen(self):
+        for widget in self.master.winfo_children():
+            widget.destroy()
+
+        self.timer_label = tk.Label(self.master, text=f"Time left: {self.time_left}s", font=("Arial", 14))
+        self.timer_label.pack()
+
+        tk.Label(self.master, text=f"Spell the word: {self.current_word}", font=("Arial", 18)).pack()
+
+        self.entry = tk.Entry(self.master, font=("Arial", 14))
         self.entry.pack()
-        self.submit_button.config(state="normal")
-        self.submit_button.pack()
-        self.feedback.config(text="")
-        self.feedback.pack()
-        self.reset_button.pack()
+        self.entry.focus()
 
-        speak_word(self.words[self.current_index])
+        tk.Button(self.master, text="Submit", command=self.check_answer).pack()
 
-    def check_spelling(self):
+    def update_timer(self):
+        self.timer_label.config(text=f"Time left: {self.time_left}s")
+        if self.time_left > 0:
+            self.time_left -= 1
+            self.master.after(1000, self.update_timer)
+        else:
+            self.check_answer(timeout=True)
+
+    def check_answer(self, timeout=False):
         user_input = self.entry.get().strip().lower()
-        correct_word = self.words[self.current_index]
-
-        if user_input == correct_word:
+        correct = self.current_word.lower()
+        if not timeout and user_input == correct:
             self.score += 1
-            self.feedback.config(text=f"Correct! Score: {self.score}")
-        else:
-            self.feedback.config(text=f"Incorrect! The word was {correct_word}")
+        self.total += 1
+        self.next_word()
 
-        self.entry.delete(0, tk.END)
-        self.current_index += 1
-
-        if self.current_index < len(self.words):
-            self.word_label.config(text=self.words[self.current_index])
-            speak_word(self.words[self.current_index])
-        else:
-            self.word_label.config(text="Game Over")
-            self.entry.config(state="disabled")
-            self.submit_button.config(state="disabled")
-            self.reset_button.config(state="normal")
-            self.feedback.config(text=f"Final score: {self.score}/{len(self.words)}")
-            save_score(self.name, self.score, len(self.words))
-
-    def reset_game(self):
-        self.word_label.pack_forget()
-        self.entry.pack_forget()
-        self.submit_button.pack_forget()
-        self.feedback.pack_forget()
-        self.reset_button.pack_forget()
-        self.__init__(self.master)
+    def end_game(self):
+        save_score(self.name, self.score, self.total)
+        for widget in self.master.winfo_children():
+            widget.destroy()
+        tk.Label(self.master, text=f"Game Over!\nScore: {self.score}/{self.total}", font=("Arial", 16)).pack()
+        tk.Button(self.master, text="Play Again", command=self.setup_start_screen).pack()
 
 if __name__ == "__main__":
     root = tk.Tk()
