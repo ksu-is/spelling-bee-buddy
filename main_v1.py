@@ -35,7 +35,7 @@ def speak_word(word):
     engine = pyttsx3.init("nsss")
     engine.say(word)
     engine.runAndWait()
-    pygame.mixer.music.set_volume(1.0)
+    pygame.mixer.music.set_volume(0.5)
 
 class SpellingBeeBuddy:
     def __init__(self, master):
