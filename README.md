@@ -1,13 +1,59 @@
-# Spelling Bee Buddy
-A Python-based educational game designed to help children improve their spelling skills in a fun and interactive way. The game presents players with spelling challenges, provides hints for tough words, and rewards correct answers with points and progression through different difficulty levels. It's ideal for kids in elementary and middle school.
-This project is a Python-based educational game designed to help children improve their spelling skills through fun and interactive gameplay.
 
-Begin by downloading or cloning this repository. The game is intended for kids in elementary or middle school, and uses a friendly interface to make spelling practice enjoyable. It includes multiple levels of difficulty, scoring, and helpful hints.
+# 🐝 Spelling Bee Buddy
 
-The following tools and libraries are used in this project:
+Spelling Bee Buddy is an educational game designed to help kids practice and improve their spelling skills in a fun, interactive way! Built using Python and tkinter, the game integrates text-to-speech pronunciation, a countdown timer for each word, background music, and score saving.
 
-1. tkinter  
-> This built-in Python library is used to create a graphical interface for the game, including buttons, text fields, and pop-up messages. It helps make the game easy to navigate for young users.
+---
 
-2. (Optional) pygame  
-> This library can be used to add fun sound effects and animations to the game, making it more engaging and responsive for kids. If you want to include sound features, you’ll need to install it using the command `pip install pygame`.
+## 🎮 Features
+
+- **Text-to-Speech (TTS):** Each word is pronounced using pyttsx3 to assist auditory learners.
+- **Countdown Timer:** Players have 10 seconds to spell each word, adding challenge and excitement.
+- **Difficulty Levels:** Easy, Medium, and Hard word lists to match player skill levels.
+- **Name Entry and Score Saving:** Player names and scores are saved automatically in a `scores.txt` file.
+- **Background Music:** Looped theme music during gameplay for a fun atmosphere.
+- **Dynamic Sound Balancing:** Music volume lowers when a word is pronounced for clarity.
+- **User-Friendly Interface:** Easy navigation between start screen, game play, and final score screens.
+
+---
+
+## 🛠️ How to Run
+
+1. Install required packages:
+   ```bash
+   pip install pyttsx3 pygame
+   ```
+
+2. Ensure you have the following files in the same directory:
+   - `main_v1.py` (or updated version)
+   - `words.json` (word bank by difficulty)
+   - `theme.mp3` (background music)
+   - `scores.txt` (will auto-create if missing)
+
+3. Run the game:
+   ```bash
+   python main_v1.py
+   ```
+
+---
+
+## 📁 Project Structure
+
+```
+/spelling-bee-buddy/
+│
+├── main_v1.py
+├── words.json
+├── theme.mp3
+├── scores.txt
+├── README.md
+├── projectroadmap.md
+```
+
+---
+
+## ✏️ Acknowledgments
+
+- Open-source references: *open-spelling-bee* repository.
+- Sound effects and music: Royalty-free tracks from Pixabay.
+- Built as part of Sprint 1, 2, and 3 for educational project development.
